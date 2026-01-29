@@ -18,10 +18,10 @@ fn main() {
     // assume all hidden layers are relu and the output is softmax
 
     let mut seq = Sequential::new(
-        0.005,
+        0.01,
         vec![
-            Layer::new(784, 64, "relu"),
-            Layer::new(64, 32, "relu"),
+            Layer::new(784, 32, "relu"),
+            Layer::new(32, 32, "relu"),
             Layer::new(32, 16, "relu"),
             Layer::new(16, 10, "softmax"),
         ]
@@ -30,7 +30,7 @@ fn main() {
     for i in 0..10 {
         for (j, row) in data.iter().take(20000).enumerate() {
             let test = seq.forward(Matrix::to_matrix(row));
-            seq.backward(test, data[0][0] as usize);
+            seq.backward(test, data[j][0] as usize);
 
             if j % 100 == 0 {
                 println!("{i} epoch {j} / 20000")
@@ -44,8 +44,8 @@ fn main() {
             if result == data[k][0] as usize {
                 correct += 1;
             }
-            println!("accuracy {}%", correct as f32/ 10.0);
         }
+        println!("accuracy {}%", correct as f32/ 10.0);
         println!("{i} epoch completed");
     }
 
