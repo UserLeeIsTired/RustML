@@ -42,7 +42,14 @@ impl Layer {
         let last_z = self.last_z.take().expect("No z");
 
         self.weight.transpose();
-        let passback = (&feed_backward * &self.weight).backward_relu(&last_z);
+        
+        let passback =
+        match self.activation_function {
+            "relu" => (&feed_backward * &self.weight).backward_relu(&last_z),
+            "softmax" => (&feed_backward * &self.weight),
+            _ => panic!("Illegal activation"),
+        };
+        
         self.weight.transpose();
 
         for i in 0..self.bias.arena.len() {

@@ -1,3 +1,4 @@
+use core::f32;
 use std::ops::{Add, Mul};
 use std::f32::consts::PI;
 use rand::{prelude::*};
@@ -29,6 +30,17 @@ impl Matrix {
         }
     }
 
+    pub fn to_matrix(vector: &Vec<u8>) -> Self {
+        Self {
+            row: 1,
+            col: vector.len() - 1,
+            arena: vector.iter()
+                .skip(1)
+                .map(|&x| x as f32) 
+                .collect()
+        }
+    }
+
     pub fn transpose(&mut self) {
         let temp = self.row;
         self.row = self.col;
@@ -39,6 +51,7 @@ impl Matrix {
         if self.col != rhs.row {
             panic!("Illegal dimension: {}x{} * {}x{}", self.row, self.col, rhs.row, rhs.col); 
         }
+        
         let mut result = Matrix::new(self.row, rhs.col, false);
         for a in 0..self.row {
             for b in 0..rhs.col {
@@ -67,6 +80,18 @@ impl Matrix {
             *error *= relu_derivative_helper(z);
         }
         self
+    }
+
+    pub fn get_max(&self) -> (usize, usize) {
+        let mut result: (usize, usize) = (0, 0);
+        for r in 0..self.row {
+            for c in 0..self.col {
+                if self.arena[r * self.col + c] > self.arena[result.0 * self.col + result.1] {
+                    result = (r, c);
+                }
+            }
+        }
+        result
     }
 }
 
