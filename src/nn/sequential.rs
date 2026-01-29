@@ -5,7 +5,7 @@ use super::activation::cross_entropy_softmax_differentiate;
 
 pub struct Sequential {
     learning_rate: f32,
-    layers: Vec<Layer>
+    pub layers: Vec<Layer>
 }
 
 impl Sequential {

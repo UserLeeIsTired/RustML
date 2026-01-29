@@ -18,7 +18,7 @@ fn main() {
     // assume all hidden layers are relu and the output is softmax
 
     let mut seq = Sequential::new(
-        0.01,
+        0.0001,
         vec![
             Layer::new(784, 32, "relu"),
             Layer::new(32, 32, "relu"),

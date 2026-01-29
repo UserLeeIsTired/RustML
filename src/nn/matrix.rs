@@ -36,7 +36,7 @@ impl Matrix {
             col: vector.len() - 1,
             arena: vector.iter()
                 .skip(1)
-                .map(|&x| x as f32) 
+                .map(|&x| x as f32/ 255.0) 
                 .collect()
         }
     }
