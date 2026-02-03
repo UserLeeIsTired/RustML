@@ -12,21 +12,32 @@ pub fn relu(input: &mut Matrix) {
 
 pub fn softmax(input: &mut Matrix) {
     let max_val = input.arena.iter().cloned().fold(f32::NEG_INFINITY, f32::max);
-    let exps: Vec<f32> = input.arena.iter().map(|x| (x - max_val).exp()).collect();
-    let sum: f32 = exps.iter().sum::<f32>() + 1e-10;
+    
+    let mut sum = 1e-10;
+    for i in 0..input.arena.len() {
+        input.arena[i] = (input.arena[i] - max_val).exp();
+        sum += input.arena[i];
+    }
 
-    for (val, exp) in input.arena.iter_mut().zip(exps.iter()) {
-        *val = exp / sum;
+    for i in 0..input.arena.len() {
+        input.arena[i] /= sum;
     }
 }
 
 pub fn cross_entropy_softmax_differentiate(output: &Matrix, correct_class: usize) -> Matrix {
-    let mut grad = Matrix::new(1, output.col, false);
-    for i in 0..output.col {
+    let (rows, cols) = output.shape();
+    let mut grad = Matrix::new(rows, cols, false);
+    
+    for i in 0..output.arena.len() {
         grad.arena[i] = output.arena[i];
-        if i == correct_class {
-            grad.arena[i] -= 1.0;
-        }
     }
+
+    let target_idx = if rows == 1 {
+        output.get_idx(0, correct_class)
+    } else {
+        output.get_idx(correct_class, 0)
+    };
+
+    grad.arena[target_idx] -= 1.0;
     grad
 }

@@ -27,6 +27,7 @@ impl Layer {
             row: z.row,
             col: z.col,
             arena: z.arena.clone(),
+            transpose: false
         });
 
         match self.activation_function {
