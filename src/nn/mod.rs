@@ -2,6 +2,7 @@ pub mod matrix;
 pub mod layer;
 pub mod activation;
 pub mod sequential;
+pub mod data;
 
 pub use matrix::Matrix;
 pub use layer::Layer;

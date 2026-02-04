@@ -1,6 +1,7 @@
 use std::path::{PathBuf};
 
 use RustML::csv_reader::open_data;
+use RustML::nn::data::DataSet;
 use RustML::nn::{Matrix, Layer, Sequential}; 
 
 fn main() {
@@ -15,10 +16,14 @@ fn main() {
     println!("Successfully loaded {} images.", data.len());
     println!("Each image has {} pixels", data[0].len() - 1);
 
+    let temp = DataSet::new(128, data);
+    let (mut train, mut test) = temp.split(0.2);
+
     // assume all hidden layers are relu and the output is softmax
 
     let mut seq = Sequential::new(
         0.0001,
+        128,
         vec![
             Layer::new(784, 32, "relu"),
             Layer::new(32, 32, "relu"),
@@ -27,26 +32,6 @@ fn main() {
         ]
     );
 
-    for i in 0..10 {
-        for (j, row) in data.iter().take(20000).enumerate() {
-            let test = seq.forward(Matrix::to_matrix(row));
-            seq.backward(test, data[j][0] as usize);
-
-            if j % 100 == 0 {
-                println!("{i} epoch {j} / 20000")
-            }
-        }
-
-        let mut correct = 0;
-        for k in 41000..42000 {
-            let test = seq.forward(Matrix::to_matrix(&data[k]));
-            let (_, result) = test.get_max();
-            if result == data[k][0] as usize {
-                correct += 1;
-            }
-        }
-        println!("accuracy {}%", correct as f32/ 10.0);
-        println!("{i} epoch completed");
-    }
+    seq.train(10, train, test, true);
 
 }

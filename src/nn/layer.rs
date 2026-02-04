@@ -4,6 +4,9 @@ use super::matrix::Matrix;
 pub struct Layer {
     pub weight: Matrix,
     pub bias: Matrix,
+    pub weight_grad: Matrix,
+    pub bias_grad: Matrix,
+    
     pub last_input: Option<Matrix>,
     pub last_z: Option<Matrix>,
     activation_function: &'static str,
@@ -14,6 +17,8 @@ impl Layer {
         Layer {
             weight: Matrix::new(input_size, output_size, true),
             bias: Matrix::new(1, output_size, false),
+            weight_grad: Matrix::new(input_size, output_size, false),
+            bias_grad: Matrix::new(1, output_size, false),
             last_input: None,
             last_z: None,
             activation_function: activation,
@@ -45,6 +50,7 @@ impl Layer {
         self.weight.transpose();
         
         let passback =
+        
         match self.activation_function {
             "relu" => (&feed_backward * &self.weight).backward_relu(&last_z),
             "softmax" => (&feed_backward * &self.weight),
@@ -53,16 +59,32 @@ impl Layer {
         
         self.weight.transpose();
 
-        for i in 0..self.bias.arena.len() {
-            self.bias.arena[i] -= learning_rate * feed_backward.arena[i];
+        for i in 0..self.bias_grad.arena.len() {
+            self.bias_grad.arena[i] -= learning_rate * feed_backward.arena[i];
         }
 
         last_input.transpose();
+        
         let gradient = &last_input * &feed_backward;
-        for i in 0..self.weight.arena.len() {
-            self.weight.arena[i] -= learning_rate * gradient.arena[i];
+        
+        for i in 0..self.weight_grad.arena.len() {
+            self.weight_grad.arena[i] -= learning_rate * gradient.arena[i];
         }
 
         passback
+    }
+
+    pub fn update(&mut self) {
+        
+        for i in 0..self.bias_grad.arena.len() {
+            self.bias.arena[i] += self.bias_grad.arena[i];
+            self.bias_grad.arena[i] = 0.0;
+        }
+
+        for i in 0..self.weight_grad.arena.len() {
+            self.weight.arena[i] += self.weight_grad.arena[i] ;
+            self.weight_grad.arena[i] = 0.0;
+        }
+
     }
 }

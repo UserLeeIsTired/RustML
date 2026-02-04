@@ -43,11 +43,11 @@ impl Matrix {
         idx
     }
 
-    pub fn to_matrix(vector: &[u8]) -> Self {
+    pub fn to_matrix(vector: &[u8], skip: usize) -> Self {
         Self {
             row: 1,
             col: vector.len() - 1,
-            arena: vector.iter().skip(1).map(|&x| x as f32 / 255.0).collect(),
+            arena: vector.iter().skip(skip).map(|&x| x as f32 / 255.0).collect(),
             transpose: false,
         }
     }
