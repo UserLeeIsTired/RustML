@@ -61,7 +61,7 @@ impl Sequential {
                 let (_, y) = result.get_max();
                 if y == input[0] as usize { correct += 1; }
             }
-            if verbose {println!("Epoch {} completed - {}% accuracy", epoch+1, correct as f32 / test_set.n as f32 * 100.0)}
+            if verbose {println!("Epoch {} completed - {}% accuracy", i+1, correct as f32 / test_set.n as f32 * 100.0)}
 
         }
     }
