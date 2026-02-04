@@ -1,6 +1,6 @@
 pub struct TestSet {
     data: Vec<Vec<u8>>,
-    n: usize,
+    pub n: usize,
 }
 
 impl TestSet {

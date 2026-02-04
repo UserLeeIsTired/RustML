@@ -2,7 +2,7 @@ use std::path::{PathBuf};
 
 use RustML::csv_reader::open_data;
 use RustML::nn::data::DataSet;
-use RustML::nn::{Matrix, Layer, Sequential}; 
+use RustML::nn::{Layer, Sequential}; 
 
 fn main() {
 
@@ -17,13 +17,12 @@ fn main() {
     println!("Each image has {} pixels", data[0].len() - 1);
 
     let temp = DataSet::new(128, data);
-    let (mut train, mut test) = temp.split(0.2);
+    let (train, test) = temp.split(0.2);
 
     // assume all hidden layers are relu and the output is softmax
 
     let mut seq = Sequential::new(
         0.0001,
-        128,
         vec![
             Layer::new(784, 32, "relu"),
             Layer::new(32, 32, "relu"),

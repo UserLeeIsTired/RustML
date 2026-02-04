@@ -1,4 +1,4 @@
-use crate::nn::data::{TestSet, TrainSet, test_set, train_set};
+use crate::nn::data::{TestSet, TrainSet};
 use crate::nn::matrix::Matrix;
 
 use super::layer::Layer;
@@ -6,15 +6,13 @@ use super::activation::cross_entropy_softmax_differentiate;
 
 pub struct Sequential {
     learning_rate: f32,
-    batch_size: usize,
     pub layers: Vec<Layer>
 }
 
 impl Sequential {
-    pub fn new(learning_rate: f32, batch_size: usize, layers: Vec<Layer>) -> Self {
+    pub fn new(learning_rate: f32, layers: Vec<Layer>) -> Self {
         Sequential { 
             learning_rate: learning_rate,
-            batch_size: batch_size,
             layers: layers,
         }
     }
@@ -63,7 +61,7 @@ impl Sequential {
                 let (_, y) = result.get_max();
                 if y == input[0] as usize { correct += 1; }
             }
-            if verbose {println!("Epoch {} completed - {}% accuracy", epoch+1, correct as f32 / train_set.n as f32 * 100.0)}
+            if verbose {println!("Epoch {} completed - {}% accuracy", epoch+1, correct as f32 / test_set.n as f32 * 100.0)}
 
         }
     }

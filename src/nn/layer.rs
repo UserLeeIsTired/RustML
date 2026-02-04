@@ -53,7 +53,7 @@ impl Layer {
         
         match self.activation_function {
             "relu" => (&feed_backward * &self.weight).backward_relu(&last_z),
-            "softmax" => (&feed_backward * &self.weight),
+            "softmax" => &feed_backward * &self.weight,
             _ => panic!("Illegal activation"),
         };
         
