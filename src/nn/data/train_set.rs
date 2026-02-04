@@ -41,6 +41,7 @@ impl TrainSet {
         }
 
         self.shuffle();
+        self.pointer = 0;
         false
     }
 }
